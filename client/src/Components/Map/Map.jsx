@@ -2,7 +2,7 @@ import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { Button } from 'react-bootstrap';
 import 'leaflet/dist/leaflet.css';
-import FormPhaseOne from '../UploadForm/FormPhaseOne';
+import FormModal from '../UploadForm/FormModal';
 
 class Map extends React.Component {
     constructor(props) {
@@ -34,7 +34,7 @@ class Map extends React.Component {
                 </MapContainer>
                 {
                     showModal &&
-                    <FormPhaseOne handleClose={this.changeViewModal} />
+                    <FormModal handleClose={this.changeViewModal} />
                 }
             </div>
         );
