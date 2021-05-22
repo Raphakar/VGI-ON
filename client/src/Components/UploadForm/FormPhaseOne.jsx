@@ -41,7 +41,7 @@ class FormPhaseOne extends React.Component {
                     :
                     <div style={{ display: 'flex' }}>
                         {categories.map(e => {
-                            return <CategoryCard name={e.name} key={e.name} />
+                            return <div key={e._id} onClick={() => { this.props.handleCategorySelected(e._id) }}><CategoryCard name={e.name} /></div>
                         })}
                     </div>
                 }

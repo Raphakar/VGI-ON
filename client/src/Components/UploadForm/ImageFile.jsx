@@ -1,10 +1,10 @@
 import React from 'react';
+import Img from "../../images/uploadImage.png";
 
 class ImageFile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: "someUniqueId", // I would use this.props.id for a real world implementation
             imageURI: null
         }
     }
@@ -30,21 +30,28 @@ class ImageFile extends React.Component {
     }
 
     handleChange(e) {
-        this.readURI(e); // maybe call this with webworker or async library?
+        this.readURI(e);
         if (this.props.onChange !== undefined)
-            this.props.onChange(e); // propagate to parent component
+            this.props.onChange(e);
     }
 
     render() {
         const imgTag = this.buildImgTag();
 
         return <div>
-            <input
-                id={this.state.id}
-                type="file"
-                onChange={this.handleChange.bind(this)} />
-            {imgTag}
+            <label>
+                {
+                    !this.state.imageURI &&
+                    <img src={Img} style={{ width: 200, height: 200 }} />
+                }
+                <input
+                    hidden
+                    type="file"
+                    onChange={this.handleChange.bind(this)} />
+                {imgTag}
+            </label>
         </div>;
     }
 }
-export default ImageFile
+
+export default ImageFile;
