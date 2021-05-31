@@ -8,6 +8,10 @@ class ImageFile extends React.Component {
             imageURI: null
         }
     }
+    componentDidMount() {
+        this.props.defaultValue &&
+            this.handleChange(this.props.defaultValue)
+    }
 
     buildImgTag() {
         let imgTag = null;

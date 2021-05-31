@@ -8,25 +8,25 @@ class FormPhaseTwo extends React.Component {
     }
 
     render() {
-        const { image, title, photoDate, description, tags } = this.props;
+        const { image, title, photoDate, description, tags } = this.props.photo;
         return (
             <Form>
                 <Col>
                     <Row>
                         <Col>
-                            <ImageFile onChange={(e) => { this.updateProperty("image", e) }} />
+                            <ImageFile defaultValue={image} onChange={(e) => { this.updateProperty("image", e) }} />
                         </Col>
                         <Col>
                             <Row>
                                 <Form.Group controlId="formTitle">
                                     <Form.Label>Title</Form.Label>
-                                    <Form.Control type="text" placeholder="Enter Title" onChange={(e) => { this.updateProperty("title", e.target.value) }} />
+                                    <Form.Control value={title} type="text" placeholder="Enter Title" onChange={(e) => { this.updateProperty("title", e.target.value) }} />
                                 </Form.Group>
                             </Row>
                             <Row>
                                 <Form.Group controlId="formPhotoDate">
                                     <Form.Label>Photo Date</Form.Label>
-                                    <Form.Control type="date" onChange={(e) => { this.updateProperty("photoDate", e.target.value) }} />
+                                    <Form.Control value={photoDate} type="date" onChange={(e) => { this.updateProperty("photoDate", e.target.value) }} />
                                 </Form.Group>
                             </Row>
                         </Col>
@@ -35,7 +35,7 @@ class FormPhaseTwo extends React.Component {
                         <Col>
                             <Form.Group controlId="formDescription">
                                 <Form.Label>Description</Form.Label>
-                                <Form.Control as="textarea" rows={3} placeholder="Description" onChange={(e) => { this.updateProperty("description", e.target.value) }} />
+                                <Form.Control value={description} as="textarea" rows={3} placeholder="Description" onChange={(e) => { this.updateProperty("description", e.target.value) }} />
                             </Form.Group>
                         </Col>
                     </Row>
@@ -43,7 +43,7 @@ class FormPhaseTwo extends React.Component {
                         <Col>
                             <Form.Group controlId="formTags">
                                 <Form.Label>Tags</Form.Label>
-                                <Form.Control as="textarea" rows={2} placeholder="Enter tags splitted by a coma" onChange={(e) => { this.updateProperty("tags", e.target.value) }} />
+                                <Form.Control value={tags} as="textarea" rows={2} placeholder="Enter tags splitted by a coma" onChange={(e) => { this.updateProperty("tags", e.target.value) }} />
                             </Form.Group>
                         </Col>
                     </Row>

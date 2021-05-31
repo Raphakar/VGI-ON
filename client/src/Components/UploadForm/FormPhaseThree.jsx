@@ -47,13 +47,13 @@ class FormPhaseThree extends React.Component {
                         <Row>
                             <Form.Group controlId="formLatitude">
                                 <Form.Label>Latitude</Form.Label>
-                                <Form.Control value={this.state.location.latitude} type="number" placeholder="Enter Latitude" />
+                                <Form.Control disabled value={this.state.location.latitude} type="number" placeholder="Enter Latitude" />
                             </Form.Group>
                         </Row>
                         <Row>
                             <Form.Group controlId="formLongitude">
                                 <Form.Label>Longitude</Form.Label>
-                                <Form.Control value={this.state.location.longitude} type="number" placeholder="Enter Longitude" onChange={(e) => { this.updateLatitudeLongitude(this.state.location.longitude, e.target.value) }} />
+                                <Form.Control disabled value={this.state.location.longitude} type="number" placeholder="Enter Longitude" onChange={(e) => { this.updateLatitudeLongitude(this.state.location.longitude, e.target.value) }} />
                             </Form.Group>
                         </Row>
                         <Row>
