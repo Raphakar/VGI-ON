@@ -11,14 +11,16 @@ class FormPhaseThree extends React.Component {
         super(props);
         this.state = {
             location: {
-                latitude: 39.705,
-                longitude: -8.402
+                latitude: props.location.latitude,
+                longitude: props.location.longitude,
+                direction: props.location.direction
             }
         }
         this.updateLatitudeLongitude = this.updateLatitudeLongitude.bind(this);
     }
 
     updateLatitudeLongitude(latitude, longitude) {
+        this.props.handleLocationChange(latitude, longitude, this.state.direction)
         this.setState({ location: { latitude, longitude } })
     }
 

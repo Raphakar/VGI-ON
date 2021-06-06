@@ -7,16 +7,20 @@ module.exports = {
         if (!fs.existsSync(currentPath)) {
             fs.mkdirSync(currentPath);
         }
-        currentPath += `/${currentDate.getUTCMonth()}`;
+        currentPath += `/${currentDate.getUTCMonth() + 1}`;
         if (!fs.existsSync(currentPath)) {
             fs.mkdirSync(currentPath);
         }
-        return currentPath+"/";
+        return currentPath + "/";
     },
-    addFileToFolder: (fileName, file) => {
-        let base64Image = file.split(';base64,').pop();
-        fs.writeFile("teste2222.png", base64Image, { encoding: 'base64' }, function (err) {
-            console.log('File created');
-        });
+    addFileToFolder: async (fileName, fileBase64) => {
+        return new Promise((resolve, reject) => {
+            fs.writeFile(fileName, fileBase64, { encoding: 'base64' }, function (err) {
+                if (err)
+                    reject("Error: " + err.message);
+                resolve('File created');
+            });
+
+        })
     }
 }

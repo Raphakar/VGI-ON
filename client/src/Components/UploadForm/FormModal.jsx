@@ -18,6 +18,17 @@ class FormModal extends React.Component {
                 photoDate: "",
                 description: "",
                 tags: "",
+            },
+            location: {
+                latitude: 39.705,
+                longitude: -8.402,
+                direction: 0,
+            },
+            formValidations: {
+                title: '',
+                photoDate: '',
+                direction: '',
+
             }
         }
 
@@ -25,7 +36,9 @@ class FormModal extends React.Component {
         this.handleCategorySelected = this.handleCategorySelected.bind(this);
         this.handleChangePhase = this.handleChangePhase.bind(this);
         this.handlePhotoPropertiesChange = this.handlePhotoPropertiesChange.bind(this);
+        this.handleLocationChange = this.handleLocationChange.bind(this);
         this.submitPhoto = this.submitPhoto.bind(this);
+        this.validateFormTwo = this.validateFormTwo.bind(this);
     }
 
     handleClose() {
@@ -34,6 +47,10 @@ class FormModal extends React.Component {
 
     handleCategorySelected(category) {
         this.setState({ categorySelected: category, phase: 2 });
+    }
+
+    handleLocationChange(latitude, longitude, direction) {
+        this.setState({ location: { latitude, longitude }, direction });
     }
 
     handleChangePhase(phase) {
@@ -46,9 +63,33 @@ class FormModal extends React.Component {
         })
     }
 
+    validateFormTwo() {
+        const { photoToSubmit } = this.state;
+        let formValidations = {}
+        let isValid = true;
+        if (!photoToSubmit.title) {
+            formValidations.title = "Please write a valid Title.";
+            isValid = false;
+        }
+        if (!photoToSubmit.image) {
+            formValidations.image = "Please select an Image.";
+            isValid = false;
+        }
+        if (photoToSubmit.photoDate) {
+            if (new Date(photoToSubmit.photoDate) > new Date()) {
+                formValidations.photoDate = "Date must be equal or less than today.";
+                isValid = false;
+            }
+        } else {
+            formValidations.photoDate = "Please select a valid Date.";
+            isValid = false;
+        }
+        this.setState({ formValidations })
+        return isValid;
+    }
+
     async submitPhoto() {
-        const { categorySelected, photoToSubmit } = this.state;
-        console.log(photoToSubmit.image.target.files[0])
+        const { categorySelected, photoToSubmit, location } = this.state;
         const toBase64 = file => new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -65,12 +106,17 @@ class FormModal extends React.Component {
                 photoToSubmit: {
                     ...photoToSubmit,
                     image,
-                }
+                },
+                location
             }),
         })
-            .then(res => res.json())
-            .then(data => {
-
+            .then(res => res.ok)
+            .then(isOk => {
+                if (isOk) {
+                    this.handleClose();
+                } else {
+                    console.log("Error happens")
+                }
             })
     }
 
@@ -84,7 +130,10 @@ class FormModal extends React.Component {
                         <Button variant="secondary" onClick={handleClose}>
                             Close
                         </Button>
-                        <Button variant="primary" onClick={() => { this.handleChangePhase(3) }}>
+                        <Button variant="primary" onClick={() => {
+                            if (this.validateFormTwo())
+                                this.handleChangePhase(3)
+                        }}>
                             Continue
                         </Button>
                     </div >
@@ -92,7 +141,9 @@ class FormModal extends React.Component {
             case 3:
                 return (
                     <div>
-                        <Button variant="secondary" onClick={() => { this.handleChangePhase(2) }}>
+                        <Button variant="secondary" onClick={() => {
+                            this.handleChangePhase(2)
+                        }}>
                             Back
                         </Button>
                         <Button variant="primary" onClick={() => this.submitPhoto()}>
@@ -106,7 +157,7 @@ class FormModal extends React.Component {
 
     render() {
         const { handleClose } = this;
-        const { show, phase, photoToSubmit } = this.state;
+        const { show, phase, photoToSubmit, location } = this.state;
         return (
             <div>
                 <Modal show={show} onHide={handleClose} dialogClassName="modalForm">
@@ -118,10 +169,10 @@ class FormModal extends React.Component {
                             <FormPhaseOne handleCategorySelected={this.handleCategorySelected} />
                         }
                         {phase === 2 &&
-                            <FormPhaseTwo photo={photoToSubmit} updatePhotoProperty={this.handlePhotoPropertiesChange} />
+                            <FormPhaseTwo formValidations={this.state.formValidations} photo={photoToSubmit} updatePhotoProperty={this.handlePhotoPropertiesChange} />
                         }
                         {phase === 3 &&
-                            <FormPhaseThree />
+                            <FormPhaseThree handleLocationChange={this.handleLocationChange} location={location} />
                         }
                     </Modal.Body>
                     <Modal.Footer>

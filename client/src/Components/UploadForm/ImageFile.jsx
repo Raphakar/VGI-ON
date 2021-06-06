@@ -18,7 +18,7 @@ class ImageFile extends React.Component {
         if (this.state.imageURI !== null)
             imgTag = (
                 <div>
-                    <img style={{ width: '100%' }} src={this.state.imageURI}></img>
+                    <img alt="Upload of the location" style={{ width: '100%' }} src={this.state.imageURI}></img>
                 </div>);
         return imgTag;
     }
@@ -46,7 +46,7 @@ class ImageFile extends React.Component {
             <label>
                 {
                     !this.state.imageURI &&
-                    <img src={Img} style={{ width: 200, height: 200 }} />
+                    <img alt="Click to upload" src={Img} style={{ width: 200, height: 200 }} />
                 }
                 <input
                     hidden

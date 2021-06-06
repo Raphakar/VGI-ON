@@ -1,0 +1,17 @@
+.backoffice-options {
+    width: 40%;
+    height: 70px;
+    border: 2px solid black;
+    text-align: center;
+    display: inline-block;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.backoffice-options:hover {
+    background-color: cadetblue;
+    color:white;
+}
+.backoffice-option {
+    font-size: x-large;
+}

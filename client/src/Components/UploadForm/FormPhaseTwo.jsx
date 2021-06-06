@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Col, Row, Image } from 'react-bootstrap';
+import { Form, Col, Row } from 'react-bootstrap';
 import ImageFile from './ImageFile'
 
 class FormPhaseTwo extends React.Component {
@@ -15,18 +15,32 @@ class FormPhaseTwo extends React.Component {
                     <Row>
                         <Col>
                             <ImageFile defaultValue={image} onChange={(e) => { this.updateProperty("image", e) }} />
+                            {
+                                this.props.formValidations.image &&
+                                <div className="invalid-feedback" style={{ display: 'block' }}>
+                                    {this.props.formValidations.image}
+                                </div>
+                            }
                         </Col>
                         <Col>
                             <Row>
                                 <Form.Group controlId="formTitle">
-                                    <Form.Label>Title</Form.Label>
-                                    <Form.Control value={title} type="text" placeholder="Enter Title" onChange={(e) => { this.updateProperty("title", e.target.value) }} />
+                                    <Form.Label>Title*</Form.Label>
+                                    <Form.Control value={title} type="text" isInvalid={this.props.formValidations.title} placeholder="Enter Title" onChange={(e) => { this.updateProperty("title", e.target.value) }} />
+
+                                    <Form.Control.Feedback type="invalid">
+                                        {this.props.formValidations.title}
+                                    </Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
                             <Row>
                                 <Form.Group controlId="formPhotoDate">
-                                    <Form.Label>Photo Date</Form.Label>
-                                    <Form.Control value={photoDate} type="date" onChange={(e) => { this.updateProperty("photoDate", e.target.value) }} />
+                                    <Form.Label>Photo Date*</Form.Label>
+                                    <Form.Control value={photoDate} isInvalid={this.props.formValidations.photoDate} type="date" onChange={(e) => { this.updateProperty("photoDate", e.target.value) }} />
+
+                                    <Form.Control.Feedback type="invalid">
+                                        {this.props.formValidations.photoDate}
+                                    </Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
                         </Col>

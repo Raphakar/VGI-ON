@@ -11,6 +11,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Map from './Components/Map/Map';
 import Header from './Components/Headers/Header';
 import Footer from './Components/Footers/Footer';
+import BackofficeOptions from './Components/Backoffice/BackofficeOptions';
 
 class RouterProject extends React.Component {
     render() {
@@ -21,6 +22,9 @@ class RouterProject extends React.Component {
                     <Header />
                     <div style={{ padding: "0px 15px", height: '80%' }}>
                         <Switch>
+                            <Route path="/backoffice">
+                                <BackofficeOptions />
+                            </Route>
                             <Route path="/">
                                 <Map />
                             </Route>
