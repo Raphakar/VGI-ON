@@ -3,6 +3,11 @@ const { MongoClient } = require('mongodb');
 module.exports = ((connection) => {
     const client = new MongoClient(connection);
     return {
+        async getTags() {
+            await client.connect();
+            const db = client.db('VGI-ON');
+            return db.collection("Tags").find().toArray();
+        },
         async insertTags(listTags) {
             await client.connect();
             const db = client.db('VGI-ON');
