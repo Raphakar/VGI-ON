@@ -1,6 +1,7 @@
 import React from 'react';
 import Grid from '../Grid';
 import { Breadcrumb } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 class GenericFormGrid extends React.Component {
     constructor(props) {
@@ -62,6 +63,10 @@ class GenericFormGrid extends React.Component {
                     <Breadcrumb.Item href="./">Backoffice</Breadcrumb.Item>
                     <Breadcrumb.Item active>Generic Forms</Breadcrumb.Item>
                 </Breadcrumb>
+
+                <div style={{ float: 'right', marginBottom: 5 }}>
+                    <Button>Add Generic Form</Button>
+                </div>
                 <Grid
                     data={categories}
                     columns={this.getColumns()}

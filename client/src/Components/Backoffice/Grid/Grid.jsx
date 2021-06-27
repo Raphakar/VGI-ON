@@ -23,6 +23,7 @@ class Grid extends React.Component {
             );
         })
     }
+
     onGridReady(params) {
         this.setState({
             gridApi: params.api,
@@ -36,7 +37,7 @@ class Grid extends React.Component {
 
     render() {
         return (
-            <div className="ag-theme-alpine" style={{ height: 500, width: '100%' }}>
+            <div className="ag-theme-alpine" style={{ height: 500, width: '100%', display:'inline-block' }}>
                 <AgGridReact rowData={this.state.data}
                     onGridReady={this.onGridReady}
                     defaultColDef={{ resizable: true }}

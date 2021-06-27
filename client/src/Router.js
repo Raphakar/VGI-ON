@@ -15,6 +15,7 @@ import BackofficeOptions from './Components/Backoffice';
 import CategoriesGrid from './Components/Backoffice/Categories';
 import TagsGrid from './Components/Backoffice/Tags';
 import PhotosGrid from './Components/Backoffice/Photos';
+import GenericFormGrid from './Components/Backoffice/GenericForm';
 
 class RouterProject extends React.Component {
     render() {
@@ -27,6 +28,9 @@ class RouterProject extends React.Component {
                         <Switch>
                             <Route path="/backoffice/categories">
                                 <CategoriesGrid />
+                            </Route>
+                            <Route path="/backoffice/genericform">
+                                <GenericFormGrid />
                             </Route>
                             <Route path="/backoffice/photos">
                                 <PhotosGrid />
