@@ -2,6 +2,7 @@ import React from 'react';
 import Grid from '../Grid';
 import { Breadcrumb } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
+import GenericFormModal from './GenericFormModal';
 
 class GenericFormGrid extends React.Component {
     constructor(props) {
@@ -9,8 +10,10 @@ class GenericFormGrid extends React.Component {
         this.state = {
             categories: [],
             loading: true,
+            showModal: false,
         }
         this.getCategories = this.getCategories.bind(this);
+        this.changeViewModal = this.changeViewModal.bind(this);
     }
 
     componentDidMount() {
@@ -48,8 +51,12 @@ class GenericFormGrid extends React.Component {
         ]
     }
 
+    changeViewModal() {
+        this.setState({ showModal: !this.state.showModal });
+    }
+
     render() {
-        const { categories, loading } = this.state;
+        const { categories, loading, showModal } = this.state;
         if (loading)
             return (
                 <div>
@@ -65,8 +72,12 @@ class GenericFormGrid extends React.Component {
                 </Breadcrumb>
 
                 <div style={{ float: 'right', marginBottom: 5 }}>
-                    <Button>Add Generic Form</Button>
+                    <Button onClick={this.changeViewModal}>Add Generic Form</Button>
                 </div>
+                {
+                    showModal &&
+                    <GenericFormModal handleClose={this.changeViewModal} />
+                }
                 <Grid
                     data={categories}
                     columns={this.getColumns()}
