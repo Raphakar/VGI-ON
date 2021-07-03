@@ -11,6 +11,9 @@ class GenericFormModal extends React.Component {
             loadingCategories: true,
             categories: [],
             formFields: [],
+            formName: "",
+            labelName: "",
+            categorySelected: "",
         }
 
         this.handleClose = this.handleClose.bind(this);
@@ -18,10 +21,17 @@ class GenericFormModal extends React.Component {
         this.generateNewFormField = this.generateNewFormField.bind(this);
         this.handleCreateNewFormField = this.handleCreateNewFormField.bind(this);
         this.handleChangeFieldInfo = this.handleChangeFieldInfo.bind(this);
+        this.handleChangeValue = this.handleChangeValue.bind(this);
+        this.handleRemoveField = this.handleRemoveField.bind(this);
+        this.uploadForm = this.uploadForm.bind(this);
     }
 
     componentDidMount() {
         this.getCategories();
+    }
+
+    handleChangeValue(propName, value) {
+        this.setState({ [propName]: value });
     }
 
     handleChangeFieldInfo(position, property, value) {
@@ -39,7 +49,7 @@ class GenericFormModal extends React.Component {
                 throw Error("Invalid Request");
             }
         }).then(e => {
-            this.setState({ categories: e, loadingCategories: false })
+            this.setState({ categories: e, loadingCategories: false, categorySelected: e[0]?._id })
         }).catch(error => {
             console.log(error)
         })
@@ -61,11 +71,38 @@ class GenericFormModal extends React.Component {
                 labelName: '',
                 typeField: 'text',
                 isRequired: false,
+                rowPosition: 0,
+                columnPosition: 0
             }]
         })
     }
 
-    generateNewFormField(position, labelName, typeField, isRequired) {
+    handleRemoveField(position) {
+        this.setState({
+            formFields: this.state.formFields.filter((e, i) => { return i !== position })
+        })
+    }
+
+    validateForm() {
+        const { formFields, formName, categorySelected } = this.state;
+    }
+
+    uploadForm() {
+        const { formFields, formName, categorySelected } = this.state;
+        let obj = {
+            formName,
+            category: categorySelected,
+            formFields: formFields.map(e => {
+                return {
+                    ...e,
+                    labelValue: this.camelizePropertyName(e.labelName),
+                }
+            })
+        }
+        console.log(obj);
+    }
+
+    generateNewFormField(position, labelName, typeField, rowPosition, columnPosition, isRequired) {
         return (
             <div key={`form_${position}`}>
                 <Form.Row>
@@ -89,7 +126,27 @@ class GenericFormModal extends React.Component {
                                 <option key="multiSelect" value="multiSelect">MultiSelect Field</option>
                                 <option key="password" value="password">Password Field</option>
                                 <option key="image" value="image">Image Field</option>
+                                <option key="checkbox" value="checkbox">Checkbox Field</option>
+                                <option key="date" value="date">Date Field</option>
                             </Form.Control>
+                        </Col>
+                    </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                    <Form.Group as={Col} controlId={`formPlaintextColumnPosition${position}`}>
+                        <Form.Label>
+                            Column Position
+                        </Form.Label>
+                        <Col>
+                            <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "columnPosition", parseInt(e.target.value)) }} type="number" placeholder="Column Position" value={columnPosition} />
+                        </Col>
+                    </Form.Group>
+                    <Form.Group as={Col} controlId={`formPlaintextRowPosition${position}`}>
+                        <Form.Label>
+                            Row Position
+                        </Form.Label>
+                        <Col>
+                            <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "rowPosition", parseInt(e.target.value)) }} type="number" placeholder="Row Position" value={rowPosition} />
                         </Col>
                     </Form.Group>
                 </Form.Row>
@@ -98,15 +155,15 @@ class GenericFormModal extends React.Component {
                         <Form.Check onChange={(e) => { this.handleChangeFieldInfo(position, "isRequired", e.target.checked) }} type="checkbox" label="Required?" checked={isRequired} />
                     </Form.Group>
                 </Form.Row>
+                <Button onClick={() => { this.handleRemoveField(position) }}>Remove Field</Button>
                 <hr />
             </div>
         );
     }
 
     render() {
-        const { handleClose, generateNewFormField } = this;
-        const { show, loadingCategories, categories, formFields } = this.state;
-        console.log(formFields)
+        const { handleClose, generateNewFormField, handleChangeValue, uploadForm } = this;
+        const { show, loadingCategories, categories, formFields, formName, categorySelected } = this.state;
         return (
             <div>
                 <Modal show={show} onHide={handleClose} dialogClassName="modalForm">
@@ -121,7 +178,7 @@ class GenericFormModal extends React.Component {
                                         Form Name*
                                     </Form.Label>
                                     <Col>
-                                        <Form.Control type="text" placeholder="Form Name" />
+                                        <Form.Control type="text" placeholder="Form Name" value={formName} onChange={(e) => { handleChangeValue("formName", e.target.value) }} />
                                     </Col>
                                 </Form.Group>
                                 <Form.Group as={Col} controlId={`formPlaintextCategory`}>
@@ -132,9 +189,9 @@ class GenericFormModal extends React.Component {
                                         {loadingCategories ?
                                             "Loading categories"
                                             :
-                                            <Form.Control sm="10" as="select">
+                                            <Form.Control sm="10" as="select" value={categorySelected} onChange={(e) => { handleChangeValue("categorySelected", e.target.value) }}>
                                                 {categories.map(e => {
-                                                    return <option  value={e._id}>{e.name}</option>
+                                                    return <option key={e._id} value={e._id}>{e.name}</option>
                                                 })}
                                             </Form.Control>}
                                     </Col>
@@ -142,7 +199,7 @@ class GenericFormModal extends React.Component {
                             </Form.Row>
                             <hr />
                             {formFields.map((e, i) => {
-                                return generateNewFormField(i, e.labelName, e.typeField, e.isRequired);
+                                return generateNewFormField(i, e.labelName, e.typeField, e.rowPosition, e.columnPosition, e.isRequired);
                             })}
                         </Form>
                         <Button onClick={this.handleCreateNewFormField}>Add Field</Button>
@@ -155,7 +212,7 @@ class GenericFormModal extends React.Component {
                                 Back
                             </Button>
                             <Button variant="primary" onClick={() => {
-                                this.handleClose()
+                                uploadForm()
                             }}>
                                 Confirm
                             </Button>
