@@ -14,6 +14,7 @@ class GenericFormModal extends React.Component {
             formName: "",
             labelName: "",
             categorySelected: "",
+            error: ""
         }
 
         this.handleClose = this.handleClose.bind(this);
@@ -24,6 +25,7 @@ class GenericFormModal extends React.Component {
         this.handleChangeValue = this.handleChangeValue.bind(this);
         this.handleRemoveField = this.handleRemoveField.bind(this);
         this.uploadForm = this.uploadForm.bind(this);
+        this.validateForm = this.validateForm.bind(this);
     }
 
     componentDidMount() {
@@ -84,7 +86,41 @@ class GenericFormModal extends React.Component {
     }
 
     validateForm() {
-        const { formFields, formName, categorySelected } = this.state;
+        // #############IMPORTANT############# 
+        // quando tiver mais tempo refactor!
+        const { formFields, formName } = this.state;
+
+        if (!formName) {
+            this.setState({ error: "Invalid Form Name" })
+            return false;
+        }
+
+        let numberPositionsColumn = new Set(formFields.map(e => e.columnPosition));
+        if (numberPositionsColumn.size !== formFields.length) {
+            this.setState({ error: "Field Column Positions invalid, make sure there are no duplicates." })
+            return false;
+        }
+
+        let numberPositionsRow = new Set(formFields.map(e => e.rowPosition));
+        if (numberPositionsRow.size !== formFields.length) {
+            this.setState({ error: "Field Row Positions invalid, make sure there are no duplicates." })
+            return false;
+        }
+
+        let fieldsValid = formFields.filter(e => !!e.labelName);
+        if (fieldsValid.length !== formFields.length) {
+            this.setState({ error: "Field Name cannot be empty." })
+            return false;
+        }
+
+        let fieldsName = new Set(formFields.map(e => e.labelName));
+        if (fieldsName.size !== formFields.length) {
+            this.setState({ error: "Field Names must be unique." })
+            return false;
+        }
+
+        this.setState({ error: "" })
+        return true;
     }
 
     uploadForm() {
@@ -100,6 +136,7 @@ class GenericFormModal extends React.Component {
             })
         }
         console.log(obj);
+        console.log(this.validateForm())
     }
 
     generateNewFormField(position, labelName, typeField, rowPosition, columnPosition, isRequired) {
@@ -108,7 +145,7 @@ class GenericFormModal extends React.Component {
                 <Form.Row>
                     <Form.Group as={Col} controlId={`formPlaintextLabelName${position}`}>
                         <Form.Label>
-                            Label Name
+                            Label Name*
                         </Form.Label>
                         <Col>
                             <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "labelName", e.target.value) }} type="text" placeholder="Label Name" value={labelName} />
@@ -116,7 +153,7 @@ class GenericFormModal extends React.Component {
                     </Form.Group>
                     <Form.Group as={Col} controlId={`formPlaintextTypeValue${position}`}>
                         <Form.Label>
-                            Type Value
+                            Type Value*
                         </Form.Label>
                         <Col>
                             <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "typeField", e.target.value) }} as="select" value={typeField}>
@@ -135,7 +172,7 @@ class GenericFormModal extends React.Component {
                 <Form.Row>
                     <Form.Group as={Col} controlId={`formPlaintextColumnPosition${position}`}>
                         <Form.Label>
-                            Column Position
+                            Column Position*
                         </Form.Label>
                         <Col>
                             <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "columnPosition", parseInt(e.target.value)) }} type="number" placeholder="Column Position" value={columnPosition} />
@@ -143,7 +180,7 @@ class GenericFormModal extends React.Component {
                     </Form.Group>
                     <Form.Group as={Col} controlId={`formPlaintextRowPosition${position}`}>
                         <Form.Label>
-                            Row Position
+                            Row Position*
                         </Form.Label>
                         <Col>
                             <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "rowPosition", parseInt(e.target.value)) }} type="number" placeholder="Row Position" value={rowPosition} />
@@ -163,10 +200,10 @@ class GenericFormModal extends React.Component {
 
     render() {
         const { handleClose, generateNewFormField, handleChangeValue, uploadForm } = this;
-        const { show, loadingCategories, categories, formFields, formName, categorySelected } = this.state;
+        const { show, loadingCategories, categories, formFields, formName, categorySelected, error } = this.state;
         return (
             <div>
-                <Modal show={show} onHide={handleClose} dialogClassName="modalForm">
+                <Modal show={show} onHide={handleClose} dialogClassName="modalForm" backdrop="static">
                     <Modal.Header closeButton>
                         <Modal.Title>Upload Image</Modal.Title>
                     </Modal.Header>
@@ -203,6 +240,7 @@ class GenericFormModal extends React.Component {
                             })}
                         </Form>
                         <Button onClick={this.handleCreateNewFormField}>Add Field</Button>
+                        <div className="errorMessage">{error}</div>
                     </Modal.Body>
                     <Modal.Footer>
                         <div>

@@ -3,3 +3,9 @@
     max-height: 80%;
 }
   
+.errorMessage {
+    text-align: center;
+    color: red;
+    font-weight: bold;
+    font-size: large;
+}
