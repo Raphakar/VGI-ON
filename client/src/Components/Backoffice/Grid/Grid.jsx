@@ -19,7 +19,7 @@ class Grid extends React.Component {
     createColumns() {
         return this.state.columns.map((e, i) => {
             return (
-                <AgGridColumn key={i} field={e.value} checkboxSelection={!!e.selectable} filter={!!e.filter} sortable={!!e.sortable} />
+                <AgGridColumn key={i} field={e.value} valueGetter={e.valueGetter} checkboxSelection={!!e.selectable} filter={!!e.filter} sortable={!!e.sortable} />
             );
         })
     }

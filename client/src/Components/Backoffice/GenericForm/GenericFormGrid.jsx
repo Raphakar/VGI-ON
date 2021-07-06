@@ -52,6 +52,9 @@ class GenericFormGrid extends React.Component {
             {
                 headerName: 'Form Fields',
                 value: 'formFields',
+                valueGetter: (e) => {
+                    return e.data.formFields.map(e => { return `${e.labelName}, ${e.typeField} type, Req? ${e.isRequired},[${e.columnPosition}, ${e.rowPosition}]` }).join("; ")
+                },
             },
         ]
     }
