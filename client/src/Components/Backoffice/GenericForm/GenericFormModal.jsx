@@ -95,15 +95,9 @@ class GenericFormModal extends React.Component {
             return false;
         }
 
-        let numberPositionsColumn = new Set(formFields.map(e => e.columnPosition));
-        if (numberPositionsColumn.size !== formFields.length) {
-            this.setState({ error: "Field Column Positions invalid, make sure there are no duplicates." })
-            return false;
-        }
-
-        let numberPositionsRow = new Set(formFields.map(e => e.rowPosition));
-        if (numberPositionsRow.size !== formFields.length) {
-            this.setState({ error: "Field Row Positions invalid, make sure there are no duplicates." })
+        let numberPositions = new Set(formFields.map(e => "" + e.columnPosition + e.rowPosition));
+        if (numberPositions.size !== formFields.length) {
+            this.setState({ error: "Field Column/Row Positions invalid, make sure there are no duplicates." })
             return false;
         }
 
@@ -125,18 +119,33 @@ class GenericFormModal extends React.Component {
 
     uploadForm() {
         const { formFields, formName, categorySelected } = this.state;
-        let obj = {
-            formName,
-            category: categorySelected,
-            formFields: formFields.map(e => {
-                return {
-                    ...e,
-                    labelValue: this.camelizePropertyName(e.labelName),
-                }
+        if (this.validateForm()) {
+            let obj = {
+                formName,
+                category: categorySelected,
+                formFields: formFields.map(e => {
+                    return {
+                        ...e,
+                        labelValue: this.camelizePropertyName(e.labelName),
+                    }
+                })
+            }
+            fetch('/api/genericForm', {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    formTemplate: obj
+                }),
             })
+                .then(res => res.ok)
+                .then(isOk => {
+                    if (isOk) {
+                        this.handleClose();
+                    } else {
+                        console.log("Error happens")
+                    }
+                })
         }
-        console.log(obj);
-        console.log(this.validateForm())
     }
 
     generateNewFormField(position, labelName, typeField, rowPosition, columnPosition, isRequired) {

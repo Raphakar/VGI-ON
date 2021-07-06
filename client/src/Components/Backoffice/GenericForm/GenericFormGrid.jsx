@@ -8,27 +8,28 @@ class GenericFormGrid extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            categories: [],
+            genericForm: [],
             loading: true,
             showModal: false,
         }
-        this.getCategories = this.getCategories.bind(this);
+        this.getGenericForms = this.getGenericForms.bind(this);
         this.changeViewModal = this.changeViewModal.bind(this);
     }
 
     componentDidMount() {
-        this.getCategories();
+        this.getGenericForms();
     }
 
-    getCategories() {
-        fetch('/api/categories').then(e => {
+    getGenericForms() {
+        fetch('/api/genericForm').then(e => {
             if (e.ok) {
                 return e.json()
             } else {
                 throw Error("Invalid Request");
             }
         }).then(e => {
-            this.setState({ categories: e, loading: false })
+            console.log(e)
+            this.setState({ genericForm: e, loading: false })
         }).catch(error => {
             console.log(error)
         })
@@ -37,17 +38,21 @@ class GenericFormGrid extends React.Component {
     getColumns() {
         return [
             {
-                name: 'id',
+                headerName: 'ID',
                 value: '_id',
             },
             {
-                name: 'name',
-                value: 'name',
+                headerName: 'Form Name',
+                value: 'formName',
             },
             {
-                name: 'Alive',
-                value: 'isAlive'
-            }
+                headerName: 'Category ID',
+                value: 'category',
+            },
+            {
+                headerName: 'Form Fields',
+                value: 'formFields',
+            },
         ]
     }
 
@@ -56,7 +61,7 @@ class GenericFormGrid extends React.Component {
     }
 
     render() {
-        const { categories, loading, showModal } = this.state;
+        const { genericForm, loading, showModal } = this.state;
         if (loading)
             return (
                 <div>
@@ -79,7 +84,7 @@ class GenericFormGrid extends React.Component {
                     <GenericFormModal handleClose={this.changeViewModal} />
                 }
                 <Grid
-                    data={categories}
+                    data={genericForm}
                     columns={this.getColumns()}
                 />
             </div>
