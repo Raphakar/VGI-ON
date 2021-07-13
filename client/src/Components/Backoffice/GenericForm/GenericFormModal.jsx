@@ -26,6 +26,7 @@ class GenericFormModal extends React.Component {
         this.handleRemoveField = this.handleRemoveField.bind(this);
         this.uploadForm = this.uploadForm.bind(this);
         this.validateForm = this.validateForm.bind(this);
+        this.generateSpecificOptions = this.generateSpecificOptions.bind(this);
     }
 
     componentDidMount() {
@@ -95,12 +96,6 @@ class GenericFormModal extends React.Component {
             return false;
         }
 
-        let numberPositions = new Set(formFields.map(e => "" + e.columnPosition + e.rowPosition));
-        if (numberPositions.size !== formFields.length) {
-            this.setState({ error: "Field Column/Row Positions invalid, make sure there are no duplicates." })
-            return false;
-        }
-
         let fieldsValid = formFields.filter(e => !!e.labelName);
         if (fieldsValid.length !== formFields.length) {
             this.setState({ error: "Field Name cannot be empty." })
@@ -148,7 +143,46 @@ class GenericFormModal extends React.Component {
         }
     }
 
-    generateNewFormField(position, labelName, typeField, rowPosition, columnPosition, isRequired) {
+    generateSpecificOptions(typeField, position, selectOptions, minValue, maxValue) {
+        switch (typeField) {
+            case "select":
+            case "multiSelect":
+                return (
+                    <Form.Group as={Col} controlId={`formPlaintextSelectOptions${position}`}>
+                        <Form.Label>
+                            Select Options* (Split by ";")
+                        </Form.Label>
+                        <Col>
+                            <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "selectOptions", e.target.value) }} type="text" placeholder="Select Options" value={selectOptions ? selectOptions : ""} />
+                        </Col>
+                    </Form.Group>
+                );
+            case "rating":
+                return (
+                    <Form.Row>
+                        <Form.Group as={Col} controlId={`formPlainNumberMinValue${position}`}>
+                            <Form.Label>
+                                Minimun Value*
+                            </Form.Label>
+                            <Col>
+                                <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "minValue", e.target.value) }} type="number" placeholder="Min Value" value={minValue ? minValue : ""} />
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Col} controlId={`formPlainNumberMaxValue${position}`}>
+                            <Form.Label>
+                                Maximum Value*
+                            </Form.Label>
+                            <Col>
+                                <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "maxValue", e.target.value) }} type="number" placeholder="Max Value" value={maxValue ? maxValue : ""} />
+                            </Col>
+                        </Form.Group>
+                    </Form.Row>)
+            default:
+                return "";
+        }
+    }
+
+    generateNewFormField(position, labelName, typeField, isRequired, selectOptions, minValue, maxValue) {
         return (
             <div key={`form_${position}`}>
                 <Form.Row>
@@ -174,28 +208,12 @@ class GenericFormModal extends React.Component {
                                 <option key="image" value="image">Image Field</option>
                                 <option key="checkbox" value="checkbox">Checkbox Field</option>
                                 <option key="date" value="date">Date Field</option>
+                                <option key="rating" value="rating">Rating Field</option>
                             </Form.Control>
                         </Col>
                     </Form.Group>
                 </Form.Row>
-                <Form.Row>
-                    <Form.Group as={Col} controlId={`formPlaintextColumnPosition${position}`}>
-                        <Form.Label>
-                            Column Position*
-                        </Form.Label>
-                        <Col>
-                            <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "columnPosition", parseInt(e.target.value)) }} type="number" placeholder="Column Position" value={columnPosition} />
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Col} controlId={`formPlaintextRowPosition${position}`}>
-                        <Form.Label>
-                            Row Position*
-                        </Form.Label>
-                        <Col>
-                            <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "rowPosition", parseInt(e.target.value)) }} type="number" placeholder="Row Position" value={rowPosition} />
-                        </Col>
-                    </Form.Group>
-                </Form.Row>
+                {this.generateSpecificOptions(typeField, position, selectOptions, minValue, maxValue)}
                 <Form.Row>
                     <Form.Group as={Col} controlId={`formPlaintextIsRequired${position}`}>
                         <Form.Check onChange={(e) => { this.handleChangeFieldInfo(position, "isRequired", e.target.checked) }} type="checkbox" label="Required?" checked={isRequired} />
@@ -245,7 +263,7 @@ class GenericFormModal extends React.Component {
                             </Form.Row>
                             <hr />
                             {formFields.map((e, i) => {
-                                return generateNewFormField(i, e.labelName, e.typeField, e.rowPosition, e.columnPosition, e.isRequired);
+                                return generateNewFormField(i, e.labelName, e.typeField, e.isRequired, e.selectOptions, e.minValue, e.maxValue);
                             })}
                         </Form>
                         <Button onClick={this.handleCreateNewFormField}>Add Field</Button>
