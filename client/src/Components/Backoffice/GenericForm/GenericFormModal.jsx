@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, Button, Form, Col } from 'react-bootstrap';
 
 import './form.css';
+import GenericFormModalTemplate from './GenericFormModalTemplate';
 
 class GenericFormModal extends React.Component {
     constructor(props) {
@@ -14,7 +15,8 @@ class GenericFormModal extends React.Component {
             formName: "",
             labelName: "",
             categorySelected: "",
-            error: ""
+            error: "",
+            showModalTemplate: false,
         }
 
         this.handleClose = this.handleClose.bind(this);
@@ -27,6 +29,7 @@ class GenericFormModal extends React.Component {
         this.uploadForm = this.uploadForm.bind(this);
         this.validateForm = this.validateForm.bind(this);
         this.generateSpecificOptions = this.generateSpecificOptions.bind(this);
+        this.handleShowTemplate = this.handleShowTemplate.bind(this);
     }
 
     componentDidMount() {
@@ -143,6 +146,10 @@ class GenericFormModal extends React.Component {
         }
     }
 
+    handleShowTemplate() {
+        this.setState({ showModalTemplate: !this.state.showModalTemplate });
+    }
+
     generateSpecificOptions(typeField, position, selectOptions, minValue, maxValue) {
         switch (typeField) {
             case "select":
@@ -227,7 +234,7 @@ class GenericFormModal extends React.Component {
 
     render() {
         const { handleClose, generateNewFormField, handleChangeValue, uploadForm } = this;
-        const { show, loadingCategories, categories, formFields, formName, categorySelected, error } = this.state;
+        const { show, loadingCategories, categories, formFields, formName, categorySelected, error, showModalTemplate } = this.state;
         return (
             <div>
                 <Modal show={show} onHide={handleClose} dialogClassName="modalForm" backdrop="static">
@@ -272,6 +279,11 @@ class GenericFormModal extends React.Component {
                     <Modal.Footer>
                         <div>
                             <Button variant="secondary" onClick={() => {
+                                this.handleShowTemplate()
+                            }}>
+                                Show Template
+                            </Button>
+                            <Button variant="secondary" onClick={() => {
                                 this.handleClose()
                             }}>
                                 Back
@@ -284,6 +296,9 @@ class GenericFormModal extends React.Component {
                         </div>
                     </Modal.Footer>
                 </Modal>
+                {
+                    showModalTemplate ? < GenericFormModalTemplate fields={formFields} handleClose={this.handleShowTemplate} /> : ""
+                }
             </div>
         );
     }

@@ -3,19 +3,29 @@ import { Form, Col } from 'react-bootstrap';
 
 
 class TextField extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            typeTextField: props.typeTextField,
+            labelName: props.labelName,
+            valueField: "",
+            isRequired: props.isRequired,
+        }
+    }
 
     handleChangeValue(propName, value) {
         this.setState({ [propName]: value });
     }
 
     render() {
+        const { labelName, typeTextField, valueField, isRequired } = this.state;
         return (
-            <Form.Group as={Col} controlId={`formPlaintextLabelName`}>
+            <Form.Group as={Col} controlId={`formPlaintext${labelName}`}>
                 <Form.Label>
-                    Label Name*
+                    {labelName}{isRequired ? '*' : ""}
                 </Form.Label>
                 <Col>
-                    <Form.Control onChange={(e) => { this.handleChangeValue("", e.target.value) }} type="text" placeholder="Label Name" value={labelName} />
+                    <Form.Control onChange={(e) => { this.handleChangeValue("valueField", e.target.value) }} type={typeTextField} value={valueField} />
                 </Col>
             </Form.Group>
         );

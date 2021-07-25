@@ -28,7 +28,7 @@ class FormPhaseThree extends React.Component {
         const position = [this.state.location.latitude, this.state.location.longitude];
         return (
             <Form>
-                <Row >
+                <Row>
                     <Col className="col-sm-9">
                         <div style={{ height: 500 }}>
                             <div className="map-marker-centered"></div>

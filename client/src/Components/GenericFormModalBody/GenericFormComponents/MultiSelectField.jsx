@@ -9,6 +9,7 @@ class MultiSelectField extends React.Component {
     }
 
     render() {
+        const { labelName } = this;
         return (
             <Form.Group as={Col} controlId={`formPlaintextLabelName`}>
                 <Form.Label>
