@@ -163,7 +163,7 @@ class GenericFormModal extends React.Component {
         this.setState({ showModalTemplate: !this.state.showModalTemplate });
     }
 
-    generateSpecificOptions(typeField, position, selectOptions, minValue, maxValue) {
+    generateSpecificOptions(typeField, position, selectOptions, minValue, maxValue, stepValue) {
         switch (typeField) {
             case "select":
             case "multiSelect":
@@ -196,20 +196,28 @@ class GenericFormModal extends React.Component {
                                 <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "maxValue", e.target.value) }} type="number" placeholder="Max Value" value={maxValue ? maxValue : ""} />
                             </Col>
                         </Form.Group>
+                        <Form.Group as={Col} controlId={`formPlainNumberStep${position}`}>
+                            <Form.Label>
+                                Step Value*
+                            </Form.Label>
+                            <Col>
+                                <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "stepValue", e.target.value) }} type="number" placeholder="Step Value" value={stepValue ? stepValue : ""} />
+                            </Col>
+                        </Form.Group>
                     </Form.Row>)
             default:
                 return "";
         }
     }
 
-    generateNewFormField(position, labelName, typeField, isRequired, selectOptions, minValue, maxValue) {
+    generateNewFormField(position, labelName, typeField, isRequired, selectOptions, minValue, maxValue, stepValue) {
         return (
             <div key={`form_${position}`}>
                 <div style={{ display: 'flex', float: 'right', fontSize: 25 }}>
-                    <i class="fa fa-arrow-up arrowBackground" onClick={() => {
+                    <i className="fa fa-arrow-up arrowBackground" onClick={() => {
                         this.handleChangeFormFieldPosition(position, position - 1);
                     }} />
-                    <i class="fa fa-arrow-down arrowBackground" onClick={() => {
+                    <i className="fa fa-arrow-down arrowBackground" onClick={() => {
                         this.handleChangeFormFieldPosition(position, position + 1);
                     }} />
                 </div>
@@ -242,7 +250,7 @@ class GenericFormModal extends React.Component {
                         </Col>
                     </Form.Group>
                 </Form.Row>
-                {this.generateSpecificOptions(typeField, position, selectOptions, minValue, maxValue)}
+                {this.generateSpecificOptions(typeField, position, selectOptions, minValue, maxValue, stepValue)}
                 <Form.Row>
                     <Form.Group as={Col} controlId={`formPlaintextIsRequired${position}`}>
                         <Form.Check onChange={(e) => { this.handleChangeFieldInfo(position, "isRequired", e.target.checked) }} type="checkbox" label="Required?" checked={isRequired} />
@@ -292,7 +300,7 @@ class GenericFormModal extends React.Component {
                             </Form.Row>
                             <hr />
                             {formFields.map((e, i) => {
-                                return generateNewFormField(i, e.labelName, e.typeField, e.isRequired, e.selectOptions, e.minValue, e.maxValue);
+                                return generateNewFormField(i, e.labelName, e.typeField, e.isRequired, e.selectOptions, e.minValue, e.maxValue, e.stepValue);
                             })}
                         </Form>
                         <Button onClick={this.handleCreateNewFormField}>Add Field</Button>

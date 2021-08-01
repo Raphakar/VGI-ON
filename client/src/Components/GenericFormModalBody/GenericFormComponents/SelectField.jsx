@@ -15,7 +15,6 @@ class SelectField extends React.Component {
     }
 
     handleChangeValue(propName, value) {
-        console.log(value)
         this.setState({ [propName]: value });
     }
 

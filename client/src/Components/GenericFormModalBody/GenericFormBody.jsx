@@ -6,7 +6,6 @@ import { MultiSelectField, SliderField, SelectField, TextField } from './Generic
 class GenericFormBody extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props)
         this.state = {
             fields: props.data.formFields,
         }
@@ -31,7 +30,7 @@ class GenericFormBody extends React.Component {
             case "date":
                 return <TextField key={`${field.labelValue}${index}`} typeTextField="date" labelName={field.labelName} isRequired={field.isRequired} />;
             case "slider":
-                return <SliderField key={`${field.labelValue}${index}`} labelName={field.labelName} isRequired={field.isRequired} min={field.minValue} max={field.maxValue} />;
+                return <SliderField key={`${field.labelValue}${index}`} labelName={field.labelName} isRequired={field.isRequired} min={field.minValue} max={field.maxValue} step={field.stepValue} />;
             default:
                 return "";
         }
@@ -42,7 +41,7 @@ class GenericFormBody extends React.Component {
             <div>
                 {this.state.fields.map((e, i) => {
                     return (
-                        <Form.Row>
+                        <Form.Row key={`form-row-${i}`}>
                             {this.generateField(e, i)}
                         </Form.Row>
                     )

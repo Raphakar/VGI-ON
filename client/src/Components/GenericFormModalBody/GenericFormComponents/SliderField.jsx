@@ -11,17 +11,18 @@ class SliderField extends React.Component {
             isRequired: props.isRequired,
             min: props.min,
             max: props.max,
+            step: props.step,
         }
     }
 
 
     handleChangeValue(propName, value) {
-        console.log(value)
         this.setState({ [propName]: value });
     }
 
     render() {
-        const { labelName, valueField, isRequired, min, max } = this.state;
+        const { labelName, valueField, isRequired, min, max, step } = this.state;
+        console.log(step)
         return (
             <Form.Group as={Col} controlId={`formPlaintext${labelName}`}>
                 <Form.Label>
@@ -29,7 +30,7 @@ class SliderField extends React.Component {
                 </Form.Label>
                 <Col>
                     <Form.Control onChange={(e) => { this.handleChangeValue("valueField", e.target.value) }}
-                        min={min ? min : '0'} max={max ? max : "100"} type="range" value={valueField} />
+                        min={min ? min : '0'} max={max ? max : "100"} step={step ? step : "1"} type="range" value={valueField} />
                     Current:{valueField}
                 </Col>
             </Form.Group>
