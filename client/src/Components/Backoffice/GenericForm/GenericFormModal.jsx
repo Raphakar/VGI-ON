@@ -30,6 +30,7 @@ class GenericFormModal extends React.Component {
         this.validateForm = this.validateForm.bind(this);
         this.generateSpecificOptions = this.generateSpecificOptions.bind(this);
         this.handleShowTemplate = this.handleShowTemplate.bind(this);
+        this.handleChangeFormFieldPosition = this.handleChangeFormFieldPosition.bind(this);
     }
 
     componentDidMount() {
@@ -87,6 +88,18 @@ class GenericFormModal extends React.Component {
         this.setState({
             formFields: this.state.formFields.filter((e, i) => { return i !== position })
         })
+    }
+
+    handleChangeFormFieldPosition(currentPosition, newPosition) {
+        let { formFields } = this.state;
+        if (formFields.length !== newPosition && newPosition >= 0) {
+            const helper = formFields[newPosition];
+            formFields[newPosition] = formFields[currentPosition];
+            formFields[currentPosition] = helper;
+            this.setState({
+                formFields,
+            })
+        }
     }
 
     validateForm() {
@@ -164,7 +177,7 @@ class GenericFormModal extends React.Component {
                         </Col>
                     </Form.Group>
                 );
-            case "rating":
+            case "slider":
                 return (
                     <Form.Row>
                         <Form.Group as={Col} controlId={`formPlainNumberMinValue${position}`}>
@@ -192,6 +205,14 @@ class GenericFormModal extends React.Component {
     generateNewFormField(position, labelName, typeField, isRequired, selectOptions, minValue, maxValue) {
         return (
             <div key={`form_${position}`}>
+                <div style={{ display: 'flex', float: 'right', fontSize: 25 }}>
+                    <i class="fa fa-arrow-up arrowBackground" onClick={() => {
+                        this.handleChangeFormFieldPosition(position, position - 1);
+                    }} />
+                    <i class="fa fa-arrow-down arrowBackground" onClick={() => {
+                        this.handleChangeFormFieldPosition(position, position + 1);
+                    }} />
+                </div>
                 <Form.Row>
                     <Form.Group as={Col} controlId={`formPlaintextLabelName${position}`}>
                         <Form.Label>
@@ -216,6 +237,7 @@ class GenericFormModal extends React.Component {
                                 <option key="checkbox" value="checkbox">Checkbox Field</option>
                                 <option key="date" value="date">Date Field</option>
                                 <option key="rating" value="rating">Rating Field</option>
+                                <option key="slider" value="slider">Slider Field</option>
                             </Form.Control>
                         </Col>
                     </Form.Group>

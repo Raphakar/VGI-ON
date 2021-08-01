@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Col } from 'react-bootstrap';
 
 
-class RatingField extends React.Component {
+class SliderField extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -37,4 +37,4 @@ class RatingField extends React.Component {
     }
 }
 
-export default RatingField;
+export default SliderField;

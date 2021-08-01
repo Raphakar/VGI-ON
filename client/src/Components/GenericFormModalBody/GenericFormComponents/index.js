@@ -1,11 +1,11 @@
 import MultiSelectField from './MultiSelectField';
-import RatingField from './RatingField';
+import SliderField from './SliderField';
 import SelectField from './SelectField';
 import TextField from './TextField';
 
 export {
     MultiSelectField,
-    RatingField,
+    SliderField,
     SelectField,
     TextField,
 }

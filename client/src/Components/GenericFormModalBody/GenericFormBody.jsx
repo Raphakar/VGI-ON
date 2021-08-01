@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
 import ImageField from './GenericFormComponents/ImageField';
-import { MultiSelectField, RatingField, SelectField, TextField } from './GenericFormComponents/index'
+import { MultiSelectField, SliderField, SelectField, TextField } from './GenericFormComponents/index'
 
 class GenericFormBody extends React.Component {
     constructor(props) {
@@ -30,8 +30,8 @@ class GenericFormBody extends React.Component {
                 return "";
             case "date":
                 return <TextField key={`${field.labelValue}${index}`} typeTextField="date" labelName={field.labelName} isRequired={field.isRequired} />;
-            case "rating":
-                return <RatingField key={`${field.labelValue}${index}`} labelName={field.labelName} isRequired={field.isRequired} min={field.minValue} max={field.maxValue} />;
+            case "slider":
+                return <SliderField key={`${field.labelValue}${index}`} labelName={field.labelName} isRequired={field.isRequired} min={field.minValue} max={field.maxValue} />;
             default:
                 return "";
         }

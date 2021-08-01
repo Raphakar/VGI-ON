@@ -9,3 +9,17 @@
     font-weight: bold;
     font-size: large;
 }
+
+.arrowBackground {
+    background-color: lightgray;
+    border-radius: 25px;
+    padding: 3px;
+    margin-right: 1px;
+}
+
+.arrowBackground:hover {
+    background-color: cadetblue;
+    border-radius: 25px;
+    padding: 3px;
+    margin-right: 1px;
+}
