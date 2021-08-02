@@ -20,7 +20,7 @@ class GenericFormBody extends React.Component {
             case "select":
                 return <SelectField key={`${field.labelValue}${index}`} labelName={field.labelName} isRequired={field.isRequired} selectOptions={field.selectOptions} />;
             case "multiSelect":
-                return <MultiSelectField key={`${field.labelValue}${index}`} labelName={field.labelName} isRequired={field.isRequired} />;
+                return <SelectField key={`${field.labelValue}${index}`} labelName={field.labelName} isRequired={field.isRequired} selectOptions={field.selectOptions} />;
             case "password":
                 return <TextField key={`${field.labelValue}${index}`} typeTextField="password" labelName={field.labelName} isRequired={field.isRequired} />;
             case "image":

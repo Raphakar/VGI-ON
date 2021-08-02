@@ -128,6 +128,24 @@ class GenericFormModal extends React.Component {
         return true;
     }
 
+    validateFieldTypes(type, property) {
+        let isValid, error;
+        switch (type) {
+            case "text":
+            case "password":
+                return { isValid, error };
+            case "number":
+                return { isValid, error };
+            case "select":
+            case "multiselect":
+                return { isValid, error };
+            case "slider":
+                return { isValid, error };
+            default:
+                return { isValid: false, error: "Invalid Property Type." };
+        }
+    }
+
     uploadForm() {
         const { formFields, formName, categorySelected } = this.state;
         if (this.validateForm()) {
@@ -163,8 +181,20 @@ class GenericFormModal extends React.Component {
         this.setState({ showModalTemplate: !this.state.showModalTemplate });
     }
 
-    generateSpecificOptions(typeField, position, selectOptions, minValue, maxValue, stepValue) {
+    generateSpecificOptions(typeField, position, selectOptions, minValue, maxValue, stepValue, regexValidation) {
         switch (typeField) {
+            case "text":
+            case "password":
+                return (
+                    <Form.Group as={Col} controlId={`formPlaintextRegexOptions${position}`}>
+                        <Form.Label>
+                            Regex Validation
+                        </Form.Label>
+                        <Col>
+                            <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "regexValidation", e.target.value) }} type="text" placeholder="Regex Validation" value={regexValidation ? regexValidation : ""} />
+                        </Col>
+                    </Form.Group>
+                );
             case "select":
             case "multiSelect":
                 return (
@@ -176,6 +206,27 @@ class GenericFormModal extends React.Component {
                             <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "selectOptions", e.target.value) }} type="text" placeholder="Select Options" value={selectOptions ? selectOptions : ""} />
                         </Col>
                     </Form.Group>
+                );
+            case "number":
+                return (
+                    <Form.Row>
+                        <Form.Group as={Col} controlId={`formPlainNumberMinValue${position}`}>
+                            <Form.Label>
+                                Minimun Value*
+                            </Form.Label>
+                            <Col>
+                                <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "minValue", e.target.value) }} type="number" placeholder="Min Value" value={minValue ? minValue : ""} />
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Col} controlId={`formPlainNumberMaxValue${position}`}>
+                            <Form.Label>
+                                Maximum Value*
+                            </Form.Label>
+                            <Col>
+                                <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "maxValue", e.target.value) }} type="number" placeholder="Max Value" value={maxValue ? maxValue : ""} />
+                            </Col>
+                        </Form.Group>
+                    </Form.Row>
                 );
             case "slider":
                 return (
@@ -210,7 +261,17 @@ class GenericFormModal extends React.Component {
         }
     }
 
-    generateNewFormField(position, labelName, typeField, isRequired, selectOptions, minValue, maxValue, stepValue) {
+    generateNewFormField(position, formFieldObject) {
+        const {
+            labelName,
+            typeField,
+            isRequired,
+            selectOptions,
+            minValue,
+            maxValue,
+            stepValue,
+            regexValidation,
+        } = formFieldObject;
         return (
             <div key={`form_${position}`}>
                 <div style={{ display: 'flex', float: 'right', fontSize: 25 }}>
@@ -250,7 +311,7 @@ class GenericFormModal extends React.Component {
                         </Col>
                     </Form.Group>
                 </Form.Row>
-                {this.generateSpecificOptions(typeField, position, selectOptions, minValue, maxValue, stepValue)}
+                {this.generateSpecificOptions(typeField, position, selectOptions, minValue, maxValue, stepValue, regexValidation)}
                 <Form.Row>
                     <Form.Group as={Col} controlId={`formPlaintextIsRequired${position}`}>
                         <Form.Check onChange={(e) => { this.handleChangeFieldInfo(position, "isRequired", e.target.checked) }} type="checkbox" label="Required?" checked={isRequired} />
@@ -300,7 +361,7 @@ class GenericFormModal extends React.Component {
                             </Form.Row>
                             <hr />
                             {formFields.map((e, i) => {
-                                return generateNewFormField(i, e.labelName, e.typeField, e.isRequired, e.selectOptions, e.minValue, e.maxValue, e.stepValue);
+                                return generateNewFormField(i, e);
                             })}
                         </Form>
                         <Button onClick={this.handleCreateNewFormField}>Add Field</Button>

@@ -22,7 +22,6 @@ class SliderField extends React.Component {
 
     render() {
         const { labelName, valueField, isRequired, min, max, step } = this.state;
-        console.log(step)
         return (
             <Form.Group as={Col} controlId={`formPlaintext${labelName}`}>
                 <Form.Label>
