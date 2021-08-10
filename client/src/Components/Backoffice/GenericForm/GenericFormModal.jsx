@@ -11,12 +11,14 @@ class GenericFormModal extends React.Component {
             show: true,
             loadingCategories: true,
             categories: [],
-            formFields: props.formFields ? props.formFields : [],
-            formName: props.formName ? props.formName : "",
-            labelName: props.labelName ? props.labelName : "",
-            categorySelected: props.categorySelected ? props.categorySelected : "",
+            idEdit: props.toEdit ? props.toEdit._id : undefined,
+            formFields: props.toEdit ? props.toEdit.formFields : [],
+            formName: props.toEdit ? props.toEdit.formName : "",
+            labelName: props.toEdit ? props.toEdit.labelName : "",
+            categorySelected: props.toEdit ? props.toEdit.categorySelected : "",
             error: "",
             showModalTemplate: false,
+            isEdit: !!props.toEdit,
         }
 
         this.handleClose = this.handleClose.bind(this);
@@ -126,7 +128,7 @@ class GenericFormModal extends React.Component {
 
         for (let index = 0; index < formFields.length; index++) {
             const element = formFields[index];
-            const validation = this.validateFieldTypes(element.typeField, element, index+1);
+            const validation = this.validateFieldTypes(element.typeField, element, index + 1);
             if (!validation.isValid) {
                 this.setState({ error: validation.error })
                 return false;
@@ -151,7 +153,7 @@ class GenericFormModal extends React.Component {
                 }
                 return { isValid, error };
             case "number":
-                case "slider":
+            case "slider":
                 if (!object.minValue || !object.maxValue) {
                     isValid = false;
                     error = `Min and Max Value in FormField ${position} is Required.`;
@@ -169,12 +171,12 @@ class GenericFormModal extends React.Component {
                 }
                 return { isValid, error };
             default:
-                return { isValid: false, error: "Invalid Property Type." };
+                return { isValid, error };
         }
     }
 
     uploadForm() {
-        const { formFields, formName, categorySelected } = this.state;
+        const { formFields, formName, categorySelected, isEdit, idEdit } = this.state;
         if (this.validateForm()) {
             let obj = {
                 formName,
@@ -186,8 +188,9 @@ class GenericFormModal extends React.Component {
                     }
                 })
             }
+            obj.id = isEdit ? idEdit : undefined;
             fetch('/api/genericForm', {
-                method: "POST",
+                method: isEdit ? "PUT" : "POST",
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     formTemplate: obj

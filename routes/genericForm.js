@@ -13,4 +13,9 @@ router.post('/', async function (req, res, next) {
     res.status(200).send("Inserted!");
 });
 
+router.put('/', async function (req, res, next) {
+    let formTemplate = req.body.formTemplate
+    await database.updateFormTemplate(formTemplate);
+    res.status(200).send("Updated!");
+});
 module.exports = router;

@@ -35,14 +35,21 @@ class Grid extends React.Component {
         params.api.sizeColumnsToFit();
     };
 
+    onSelectionChanged = () => {
+        const selectedRows = this.state.gridApi.getSelectedRows();
+        if (this.props.onSelectChange)
+            this.props.onSelectChange(selectedRows);
+    };
+
     render() {
         return (
-            <div className="ag-theme-alpine" style={{ height: 500, width: '100%', display:'inline-block' }}>
+            <div className="ag-theme-alpine" style={{ height: 500, width: '100%', display: 'inline-block' }}>
                 <AgGridReact rowData={this.state.data}
                     onGridReady={this.onGridReady}
                     defaultColDef={{ resizable: true }}
                     rowSelection={'multiple'}
-                    onFirstDataRendered={this.onFirstDataRendered.bind(this)}>
+                    onFirstDataRendered={this.onFirstDataRendered.bind(this)}
+                    onSelectionChanged={this.onSelectionChanged.bind(this)}>
                     {this.createColumns()}
                 </AgGridReact>
             </div>

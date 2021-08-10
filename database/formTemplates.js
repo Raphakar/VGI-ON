@@ -13,5 +13,10 @@ module.exports = ((connection) => {
             const db = client.db('VGI-ON');
             return db.collection("FormTemplates").insertOne(formTemplate)
         },
+        async updateFormTemplate(formTemplate) {
+            await client.connect();
+            const db = client.db('VGI-ON');
+            return db.collection("FormTemplates").updateOne({ _id: formTemplate.id }, formTemplate)
+        },
     }
 })

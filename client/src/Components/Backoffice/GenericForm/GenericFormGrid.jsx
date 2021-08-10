@@ -11,9 +11,12 @@ class GenericFormGrid extends React.Component {
             genericForm: [],
             loading: true,
             showModal: false,
+            selected: []
         }
         this.getGenericForms = this.getGenericForms.bind(this);
         this.changeViewModal = this.changeViewModal.bind(this);
+        this.editViewModal = this.editViewModal.bind(this);
+        this.onSelectChange = this.onSelectChange.bind(this);
     }
 
     componentDidMount() {
@@ -59,11 +62,17 @@ class GenericFormGrid extends React.Component {
     }
 
     changeViewModal() {
-        this.setState({ showModal: !this.state.showModal });
+        this.setState({ showModal: !this.state.showModal, toShowSelected: undefined });
+    }
+    editViewModal() {
+        this.setState({ showModal: !this.state.showModal, toShowSelected: this.state.selected[0] });
     }
 
+    onSelectChange(selected) {
+        this.setState({ selected });
+    }
     render() {
-        const { genericForm, loading, showModal } = this.state;
+        const { genericForm, loading, showModal, selected, toShowSelected } = this.state;
         if (loading)
             return (
                 <div>
@@ -79,15 +88,17 @@ class GenericFormGrid extends React.Component {
                 </Breadcrumb>
 
                 <div style={{ float: 'right', marginBottom: 5 }}>
+                    {selected.length > 0 && <Button onClick={this.editViewModal}>Edit Generic Form</Button>}
                     <Button onClick={this.changeViewModal}>Add Generic Form</Button>
                 </div>
                 {
                     showModal &&
-                    <GenericFormModal handleClose={this.changeViewModal} />
+                    <GenericFormModal handleClose={this.changeViewModal} toEdit={toShowSelected} />
                 }
                 <Grid
                     data={genericForm}
                     columns={this.getColumns()}
+                    onSelectChange={this.onSelectChange}
                 />
             </div>
         );
