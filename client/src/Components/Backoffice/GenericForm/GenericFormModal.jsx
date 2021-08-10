@@ -11,10 +11,10 @@ class GenericFormModal extends React.Component {
             show: true,
             loadingCategories: true,
             categories: [],
-            formFields: [],
-            formName: "",
-            labelName: "",
-            categorySelected: "",
+            formFields: props.formFields ? props.formFields : [],
+            formName: props.formName ? props.formName : "",
+            labelName: props.labelName ? props.labelName : "",
+            categorySelected: props.categorySelected ? props.categorySelected : "",
             error: "",
             showModalTemplate: false,
         }
@@ -124,22 +124,49 @@ class GenericFormModal extends React.Component {
             return false;
         }
 
+        for (let index = 0; index < formFields.length; index++) {
+            const element = formFields[index];
+            const validation = this.validateFieldTypes(element.typeField, element, index+1);
+            if (!validation.isValid) {
+                this.setState({ error: validation.error })
+                return false;
+            }
+        }
         this.setState({ error: "" })
         return true;
     }
 
-    validateFieldTypes(type, property) {
-        let isValid, error;
+    validateFieldTypes(type, object, position) {
+        let isValid = true, error = "";
         switch (type) {
             case "text":
             case "password":
+                if (object.regexValidation) {
+                    try {
+                        new RegExp(object.regexValidation);
+                    } catch (e) {
+                        isValid = false;
+                        error = `Regex Expression in FormField ${position} is Invalid.`;
+                    }
+                }
                 return { isValid, error };
             case "number":
+                case "slider":
+                if (!object.minValue || !object.maxValue) {
+                    isValid = false;
+                    error = `Min and Max Value in FormField ${position} is Required.`;
+                }
+                if (object.minValue > object.maxValue) {
+                    isValid = false;
+                    error = `Min Value in FormField ${position} can't be lower than the Max.`;
+                }
                 return { isValid, error };
             case "select":
             case "multiselect":
-                return { isValid, error };
-            case "slider":
+                if (!object.selectOptions) {
+                    isValid = false;
+                    error = `Select Options in FormField ${position} is Required.`;
+                }
                 return { isValid, error };
             default:
                 return { isValid: false, error: "Invalid Property Type." };
@@ -178,7 +205,8 @@ class GenericFormModal extends React.Component {
     }
 
     handleShowTemplate() {
-        this.setState({ showModalTemplate: !this.state.showModalTemplate });
+        if (this.validateForm())
+            this.setState({ showModalTemplate: !this.state.showModalTemplate });
     }
 
     generateSpecificOptions(typeField, position, selectOptions, minValue, maxValue, stepValue, regexValidation) {
@@ -249,7 +277,7 @@ class GenericFormModal extends React.Component {
                         </Form.Group>
                         <Form.Group as={Col} controlId={`formPlainNumberStep${position}`}>
                             <Form.Label>
-                                Step Value*
+                                Step Value
                             </Form.Label>
                             <Col>
                                 <Form.Control onChange={(e) => { this.handleChangeFieldInfo(position, "stepValue", e.target.value) }} type="number" placeholder="Step Value" value={stepValue ? stepValue : ""} />

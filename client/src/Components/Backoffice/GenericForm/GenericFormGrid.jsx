@@ -28,7 +28,6 @@ class GenericFormGrid extends React.Component {
                 throw Error("Invalid Request");
             }
         }).then(e => {
-            console.log(e)
             this.setState({ genericForm: e, loading: false })
         }).catch(error => {
             console.log(error)
