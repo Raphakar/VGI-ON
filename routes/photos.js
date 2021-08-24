@@ -32,6 +32,7 @@ router.post('/', async function (req, res, next) {
             pictureDate: photo.photoDate,
             dateUploaded: new Date(),
             direction: req.body.location.direction,
+            genericFormValues: req.body.genericFormValues
         };
         await database.insertPhoto(photoObject);
         res.sendStatus(200);

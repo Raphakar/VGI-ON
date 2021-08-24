@@ -15,6 +15,8 @@ class SelectField extends React.Component {
     }
 
     handleChangeValue(propName, value) {
+        this.props.updateGenericFormProperty &&
+            this.props.updateGenericFormProperty(value)
         this.setState({ [propName]: value });
     }
 

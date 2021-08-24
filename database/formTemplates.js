@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 
 module.exports = ((connection) => {
     const client = new MongoClient(connection);
@@ -16,7 +16,10 @@ module.exports = ((connection) => {
         async updateFormTemplate(formTemplate) {
             await client.connect();
             const db = client.db('VGI-ON');
-            return db.collection("FormTemplates").updateOne({ _id: formTemplate.id }, formTemplate)
+            let newFormTemplate = { ...formTemplate }
+            delete newFormTemplate.id
+            let set = { $set: { ...newFormTemplate } }
+            return db.collection("FormTemplates").updateOne({ _id: ObjectId(formTemplate.id) }, set)
         },
     }
 })

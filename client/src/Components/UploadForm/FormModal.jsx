@@ -5,6 +5,7 @@ import FormPhaseTwo from './FormPhaseTwo';
 
 import './form.css';
 import FormPhaseThree from './FormPhaseThree';
+import FormPhaseFour from './FormPhaseFour';
 
 class FormModal extends React.Component {
     constructor(props) {
@@ -38,6 +39,7 @@ class FormModal extends React.Component {
         this.handlePhotoPropertiesChange = this.handlePhotoPropertiesChange.bind(this);
         this.handleLocationChange = this.handleLocationChange.bind(this);
         this.submitPhoto = this.submitPhoto.bind(this);
+        this.handleGenericFormPropertiesChange = this.handleGenericFormPropertiesChange.bind(this);
         this.validateFormTwo = this.validateFormTwo.bind(this);
     }
 
@@ -46,7 +48,18 @@ class FormModal extends React.Component {
     }
 
     handleCategorySelected(category) {
-        this.setState({ categorySelected: category, phase: 2 });
+        this.setState({ categorySelected: category, phase: 2 }, () => {
+            fetch(`/api/categories/genericForm/${category}`)
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data)
+                    if (data) {
+                        this.setState({ fourthStepData: data })
+                    }
+                }).catch(e => {
+                    console.log(e)
+                })
+        });
     }
 
     handleLocationChange(latitude, longitude, direction) {
@@ -60,6 +73,12 @@ class FormModal extends React.Component {
     handlePhotoPropertiesChange(name, value) {
         this.setState({
             photoToSubmit: { ...this.state.photoToSubmit, [name]: value }
+        })
+    }
+
+    handleGenericFormPropertiesChange(name, value) {
+        this.setState({
+            genericFormValues: { ...this.state.genericFormValues, [name]: value }
         })
     }
 
@@ -88,8 +107,12 @@ class FormModal extends React.Component {
         return isValid;
     }
 
+    validateFormFour() {
+
+    }
+
     async submitPhoto() {
-        const { categorySelected, photoToSubmit, location } = this.state;
+        const { categorySelected, photoToSubmit, location, genericFormValues } = this.state;
         const toBase64 = file => new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -98,6 +121,8 @@ class FormModal extends React.Component {
         });
 
         let image = await toBase64(photoToSubmit.image.target.files[0]);
+
+        let a = {}
         fetch('/api/photos', {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
@@ -107,6 +132,7 @@ class FormModal extends React.Component {
                     ...photoToSubmit,
                     image,
                 },
+                genericFormValues,
                 location
             }),
         })
@@ -146,8 +172,21 @@ class FormModal extends React.Component {
                         }}>
                             Back
                         </Button>
+                        <Button variant="primary" onClick={() => this.state.fourthStepData ? this.handleChangePhase(4) : this.submitPhoto()}>
+                            {this.state.fourthStepData ? "Continue" : "Confirm"}
+                        </Button>
+                    </div>
+                );
+            case 4:
+                return (
+                    <div>
+                        <Button variant="secondary" onClick={() => {
+                            this.handleChangePhase(3)
+                        }}>
+                            Back
+                        </Button>
                         <Button variant="primary" onClick={() => this.submitPhoto()}>
-                            Confirm
+                            {"Confirm"}
                         </Button>
                     </div>
                 );
@@ -157,7 +196,7 @@ class FormModal extends React.Component {
 
     render() {
         const { handleClose } = this;
-        const { show, phase, photoToSubmit, location } = this.state;
+        const { show, phase, photoToSubmit, location, fourthStepData } = this.state;
         return (
             <div>
                 <Modal show={show} onHide={handleClose} dialogClassName="modalForm">
@@ -173,6 +212,9 @@ class FormModal extends React.Component {
                         }
                         {phase === 3 &&
                             <FormPhaseThree handleLocationChange={this.handleLocationChange} location={location} />
+                        }
+                        {phase === 4 &&
+                            <FormPhaseFour data={fourthStepData} updateGenericFormProperty={this.handleGenericFormPropertiesChange} />
                         }
                     </Modal.Body>
                     <Modal.Footer>
