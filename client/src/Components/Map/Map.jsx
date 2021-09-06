@@ -5,11 +5,11 @@ import { Button } from 'react-bootstrap';
 import 'leaflet/dist/leaflet.css';
 import FormModal from '../UploadForm/FormModal';
 
-import icon from 'leaflet/dist/images/marker-icon.png';
+import iconMarker from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 let DefaultIcon = L.icon({
-    iconUrl: icon,
+    iconUrl: iconMarker,
     shadowUrl: iconShadow
 });
 
@@ -49,6 +49,8 @@ class Map extends React.Component {
         this.setState({ showModal: !this.state.showModal });
     }
 
+
+
     render() {
         const { showModal, photos, loading } = this.state;
         const position = [51.505, -0.09];
@@ -67,8 +69,8 @@ class Map extends React.Component {
                     />
                     {photos.length > 0 &&
                         this.state.photos.map((marker) => (
-                            <Marker key={marker._id} position={marker.location.location}>
-                                <Popup>
+                            <Marker key={marker._id} position={marker.location.location} icon={getMarkerIcon()}>
+                                <Popup className="request-popup">
                                     {marker.title}
                                 </Popup>
                             </Marker>
@@ -83,4 +85,13 @@ class Map extends React.Component {
     }
 }
 
+function getMarkerIcon() {
+    const icon = new L.Icon({
+        iconSize: [24, 37], // size of the icon
+        iconAnchor: [12, 37],
+        iconUrl: iconMarker,
+        shadowUrl: iconShadow
+    });
+    return icon;
+}
 export default Map;

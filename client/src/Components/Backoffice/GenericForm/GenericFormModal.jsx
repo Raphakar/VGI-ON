@@ -7,6 +7,7 @@ import GenericFormModalTemplate from './GenericFormModalTemplate';
 class GenericFormModal extends React.Component {
     constructor(props) {
         super(props);
+        console.log(props)
         this.state = {
             show: true,
             loadingCategories: true,
@@ -15,7 +16,7 @@ class GenericFormModal extends React.Component {
             formFields: props.toEdit ? props.toEdit.formFields : [],
             formName: props.toEdit ? props.toEdit.formName : "",
             labelName: props.toEdit ? props.toEdit.labelName : "",
-            categorySelected: props.toEdit ? props.toEdit.categorySelected : "",
+            categorySelected: props.toEdit ? props.toEdit.category : "",
             error: "",
             showModalTemplate: false,
             isEdit: !!props.toEdit,
@@ -58,7 +59,7 @@ class GenericFormModal extends React.Component {
                 throw Error("Invalid Request");
             }
         }).then(e => {
-            this.setState({ categories: e, loadingCategories: false, categorySelected: e[0]?._id })
+            this.setState({ categories: e, loadingCategories: false, categorySelected: this.state.categorySelected ? this.state.categorySelected : e[0]?._id })
         }).catch(error => {
             console.log(error)
         })
@@ -105,8 +106,6 @@ class GenericFormModal extends React.Component {
     }
 
     validateForm() {
-        // #############IMPORTANT############# 
-        // quando tiver mais tempo refactor!
         const { formFields, formName } = this.state;
 
         if (!formName) {
