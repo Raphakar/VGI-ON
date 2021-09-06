@@ -29,8 +29,8 @@ class FormModal extends React.Component {
                 title: '',
                 photoDate: '',
                 direction: '',
-
-            }
+            },
+            genericFormValues: {}
         }
 
         this.handleClose = this.handleClose.bind(this);
@@ -108,7 +108,47 @@ class FormModal extends React.Component {
     }
 
     validateFormFour() {
+        const { fourthStepData, genericFormValues } = this.state;
+        let hasErrors = false, listErrors = [];
+        fourthStepData.formFields.forEach(element => {
+            if (genericFormValues[element.labelValue])
+                switch (element.typeField) {
+                    case "text":
+                    case "password":
+                        if (element.regexValidation) {
+                            const regex = new RegExp(element.regexValidation);
+                            if (!regex.test(genericFormValues[element.labelValue])) {
+                                hasErrors = true;
+                                const error = `Text inside ${element.labelName} is not considered valid! Make sure it meets the regex requirements(${element.regexValidation}).`;
+                                listErrors.push(error)
+                            }
+                        }
+                        break;
+                    case "number":
+                    case "slider":
+                        if (element.minValue && element.maxValue) {
+                            const value = parseInt(genericFormValues[element.labelValue]);
+                            if (parseInt(element.minValue) > value || value > parseInt(element.maxValue)) {
+                                hasErrors = true;
+                                const error = `Number inside ${element.labelName} is not considered valid! Make sure it is higher than the min${parseInt(element.minValue)} and less than the max(${parseInt(element.maxValue)}).`;
+                                listErrors.push(error)
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            else {
 
+                if (element.isRequired) {
+                    hasErrors = true;
+                    const error = `"${element.labelName}" is required.`;
+                    listErrors.push(error)
+                }
+            }
+        });
+        this.setState({ fourthStepErrors: listErrors });
+        return hasErrors;
     }
 
     async submitPhoto() {
@@ -121,8 +161,6 @@ class FormModal extends React.Component {
         });
 
         let image = await toBase64(photoToSubmit.image.target.files[0]);
-
-        let a = {}
         fetch('/api/photos', {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
@@ -185,7 +223,10 @@ class FormModal extends React.Component {
                         }}>
                             Back
                         </Button>
-                        <Button variant="primary" onClick={() => this.submitPhoto()}>
+                        <Button variant="primary" onClick={() => {
+                            if (!this.validateFormFour())
+                                this.submitPhoto()
+                        }}>
                             {"Confirm"}
                         </Button>
                     </div>
@@ -214,7 +255,7 @@ class FormModal extends React.Component {
                             <FormPhaseThree handleLocationChange={this.handleLocationChange} location={location} />
                         }
                         {phase === 4 &&
-                            <FormPhaseFour data={fourthStepData} updateGenericFormProperty={this.handleGenericFormPropertiesChange} />
+                            <FormPhaseFour formValidations={this.state.fourthStepErrors} data={fourthStepData} updateGenericFormProperty={this.handleGenericFormPropertiesChange} />
                         }
                     </Modal.Body>
                     <Modal.Footer>

@@ -70,7 +70,7 @@ class Map extends React.Component {
                     {photos.length > 0 &&
                         this.state.photos.map((marker) => (
                             <Marker key={marker._id} position={marker.location.location} icon={getMarkerIcon()}>
-                                <Popup className="request-popup">
+                                <Popup>
                                     {marker.title}
                                 </Popup>
                             </Marker>
