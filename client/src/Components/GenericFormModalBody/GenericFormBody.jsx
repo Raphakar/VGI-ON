@@ -15,17 +15,17 @@ class GenericFormBody extends React.Component {
         const { updateGenericFormProperty } = this.props;
         switch (field.typeField) {
             case "text":
-                return <TextField updateGenericFormProperty={(value) => updateGenericFormProperty(field.labelValue, value)} key={`${field.labelValue}${index}`} typeTextField="text" labelName={field.labelName} isRequired={field.isRequired} />;
+                return <TextField updateGenericFormProperty={(value) => updateGenericFormProperty && updateGenericFormProperty(field.labelValue, value)} key={`${field.labelValue}${index}`} typeTextField="text" labelName={field.labelName} isRequired={field.isRequired} />;
             case "number":
-                return <TextField updateGenericFormProperty={(value) => updateGenericFormProperty(field.labelValue, value)} key={`${field.labelValue}${index}`} typeTextField="number" labelName={field.labelName} isRequired={field.isRequired} />;
+                return <TextField updateGenericFormProperty={(value) => updateGenericFormProperty && updateGenericFormProperty(field.labelValue, value)} key={`${field.labelValue}${index}`} typeTextField="number" labelName={field.labelName} isRequired={field.isRequired} />;
             case "select":
-                return <SelectField updateGenericFormProperty={(value) => updateGenericFormProperty(field.labelValue, value)} key={`${field.labelValue}${index}`} labelName={field.labelName} isRequired={field.isRequired} selectOptions={field.selectOptions} />;
+                return <SelectField updateGenericFormProperty={(value) => updateGenericFormProperty && updateGenericFormProperty(field.labelValue, value)} key={`${field.labelValue}${index}`} labelName={field.labelName} isRequired={field.isRequired} selectOptions={field.selectOptions} />;
             case "multiSelect":
-                return <SelectField updateGenericFormProperty={(value) => updateGenericFormProperty(field.labelValue, value)} key={`${field.labelValue}${index}`} labelName={field.labelName} isRequired={field.isRequired} selectOptions={field.selectOptions} />;
+                return <SelectField updateGenericFormProperty={(value) => updateGenericFormProperty && updateGenericFormProperty(field.labelValue, value)} key={`${field.labelValue}${index}`} labelName={field.labelName} isRequired={field.isRequired} selectOptions={field.selectOptions} />;
             case "password":
-                return <TextField updateGenericFormProperty={(value) => updateGenericFormProperty(field.labelValue, value)} key={`${field.labelValue}${index}`} typeTextField="password" labelName={field.labelName} isRequired={field.isRequired} />;
+                return <TextField updateGenericFormProperty={(value) => updateGenericFormProperty && updateGenericFormProperty(field.labelValue, value)} key={`${field.labelValue}${index}`} typeTextField="password" labelName={field.labelName} isRequired={field.isRequired} />;
             case "image":
-                return <ImageField updateGenericFormProperty={(value) => updateGenericFormProperty(field.labelValue, value)} key={`${field.labelValue}${index}`} labelName={field.labelName} isRequired={field.isRequired} />;
+                return <ImageField updateGenericFormProperty={(value) => updateGenericFormProperty && updateGenericFormProperty(field.labelValue, value)} key={`${field.labelValue}${index}`} labelName={field.labelName} isRequired={field.isRequired} />;
             case "checkbox":
                 return "";
             case "rating":
