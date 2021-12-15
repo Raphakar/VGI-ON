@@ -14,7 +14,6 @@ app.use(logger('dev'));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function (req, res, next) {
 
@@ -43,15 +42,16 @@ app.use(function (req, res, next) {
   next(createError(404));
 });
 
-
+console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV === "production") {
   // Set static folder
   app.use(express.static("client/build"));
 
   app.get("*", (req, res) => {
-      res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
   });
-}
+} else
+  app.use(express.static(path.join(__dirname, 'public')));
 
 
 // error handler
