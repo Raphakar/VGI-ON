@@ -37,12 +37,6 @@ app.use(function (req, res, next) {
 
 app.use('/api', router);
 
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
-});
-
-console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV === "production") {
   // Set static folder
   app.use(express.static("client/build"));
@@ -54,11 +48,15 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, 'public')));
 
 
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+  next(createError(404));
+});
+
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  console.log(err.message)
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
