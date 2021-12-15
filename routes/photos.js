@@ -1,6 +1,5 @@
 var express = require('express');
 var fs = require('fs');
-const { insertPhoto } = require('../database');
 var router = express.Router();
 const database = require('../database');
 const folderControl = require("../services/folderControl")
@@ -17,7 +16,7 @@ router.post('/', async function (req, res, next) {
         let base64Image = photo.image.split(';base64,').pop();
         await folderControl.addFileToFolder(filePath, base64Image);
         let tags = photo.tags.split(",");
-        tags = tags.length > 0 ? tags.map(e => { return { name: e.trim() } }).filter(e => { return e; }) : [];
+        tags = tags.length > 0 ? tags.map(e => { return { name: e.trim() } }).filter(e => e.name) : [];
         let tagIds = await database.insertTags(tags);
         let photoObject = {
             title: photo.title,

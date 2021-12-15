@@ -5,7 +5,7 @@ const photos = require('./photos');
 const tags = require('./tags');
 const userRoles = require('./userRoles');
 const users = require('./users');
-
+    
 module.exports = {
     ...categories(connection),
     ...formTemplates(connection),

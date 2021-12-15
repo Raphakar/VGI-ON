@@ -9,6 +9,8 @@ module.exports = ((connection) => {
             return db.collection("Tags").find().toArray();
         },
         async insertTags(listTags) {
+            if (listTags.length === 0)
+                return [];
             await client.connect();
             const db = client.db('VGI-ON');
             return new Promise(async (resolve) => {
